@@ -69,7 +69,9 @@ module Lita
 
       private
       def check_room!(response)
-        @room = response.message.source.room
+        # KLUDGE: The following is a gross hack as the current room_object is incorrect.
+        # See lita-slack Issue #44
+        @room = Lita::Room.find_by_id(response.message.source.room).name
         response.reply_privately("You must be in the class channel to send this message.") unless @room
         @room
       end
