@@ -13,34 +13,41 @@ describe Lita::Handlers::HelpQueue, lita_handler: true do
   ## General Commands
   context "bot commands" do
     let(:dylan)  { Lita::User.create(123, mention_name: "dylan") }
-    let(:rails)  { Lita::Room.new(name: "rails") }
-    let(:ocaml)  { Lita::Room.new(name: "ocaml") }
+    let(:rails)  { Lita::Room.new("rails") }
+    let(:ocaml)  { Lita::Room.new("ocaml") }
     let(:vedika) { Lita::User.create(456, mention_name: "vedika") }
     let(:brit)   { Lita::User.create(789, mention_name: "brit") }
 
-    it "allows users to queue themselves for help" do
+    it "doesn't allow students to send messages outside the class channel" do
+      ["halp me", "halp nvm", "halp queue", "halp count"].each do |cmd|
+        send_command(cmd, as: dylan)
+        expect(replies.last).to start_with("You must be in the class channel")
+      end
+    end
+
+    it "allows students to queue themselves for help" do
       send_command("halp me", as: dylan, from: rails)
       expect(replies.last).to start_with("dylan: Help is on the way.")
     end
 
-    it "doesn't allow users to queue themselves twice" do
+    it "doesn't allow students to queue themselves twice" do
       send_command("halp me", as: dylan, from: rails)
       send_command("halp me", as: dylan, from: rails)
       expect(replies.last).to start_with("dylan: Easy there killer. You're already on the list.")
     end
 
-    it "allows users to remove themselves if they figure it out" do
+    it "allows students to remove themselves if they figure it out" do
       send_command("halp me", as: dylan, from: rails)
       send_command("halp nvm", as: dylan, from: rails)
       expect(replies.last).to start_with("dylan: Glad you figured it out! :)")
     end
 
-    it "doesn't allow users to remove themselves if they aren't in the queue" do
+    it "doesn't allow students to remove themselves if they aren't in the queue" do
       send_command("halp nvm", as: dylan, from: rails)
-      expect(replies.last).to start_with("dylan: You know you're not in the queue right?")
+      expect(replies.last).to start_with("dylan: You know you're not in the queue, right?")
     end
 
-    it "allows users to get an up to date count of people in that room's queue" do
+    it "allows students to get an up to date count of people in that room's queue" do
       send_command("halp me", as: vedika, from: rails)
       send_command("halp count", from: rails)
       expect(replies.last).to start_with("Hackers seeking fresh eyes: 1")
@@ -48,7 +55,7 @@ describe Lita::Handlers::HelpQueue, lita_handler: true do
       send_command("halp count", from: ocaml)
       expect(replies.last).to start_with("Hackers seeking fresh eyes: 0")
 
-      send_comand("halp me", as: dylan, from: rails)
+      send_command("halp me", as: dylan, from: rails)
       send_command("halp count", from: rails)
       expect(replies.last).to start_with("Hackers seeking fresh eyes: 2")
 
