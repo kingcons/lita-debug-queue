@@ -1,13 +1,13 @@
-# lita-help-queue
+# lita-debug-queue
 
 TODO: Add a description of the plugin.
 
 ## Installation
 
-Add lita-help-queue to your Lita instance's Gemfile:
+Add lita-debug-queue to your Lita instance's Gemfile:
 
 ``` ruby
-gem "lita-help-queue"
+gem "lita-debug-queue"
 ```
 
 ## Configuration

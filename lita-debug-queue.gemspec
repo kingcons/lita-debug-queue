@@ -1,8 +1,8 @@
 Gem::Specification.new do |spec|
-  spec.name          = "lita-help-queue"
+  spec.name          = "lita-debug-queue"
   spec.version       = "0.1.0"
-  spec.authors       = ["TODO: Write your name"]
-  spec.email         = ["redline6561@gmail.com"]
+  spec.authors       = ["Brit Butler"]
+  spec.email         = ["brit@kingcons.io"]
   spec.description   = "TODO: Add a description"
   spec.summary       = "TODO: Add a summary"
   spec.homepage      = "TODO: Add a homepage"
