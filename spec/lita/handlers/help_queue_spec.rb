@@ -7,8 +7,8 @@ describe Lita::Handlers::HelpQueue, lita_handler: true do
   it { is_expected.to route_command("halp queue").to(:show) }
   it { is_expected.to route_command("halp count").to(:count) }
   it { is_expected.to route_command("halp next").with_authorization_for(:instructors).to(:next) }
-  it { is_expected.to route_command("halp pop phteven").with_authorization_for(:instructors).to(:drop) }
-  it { is_expected.to route_command("help clear").with_authorization_for(:instructors).to(:clear) }
+  it { is_expected.to route_command("halp drop phteven").with_authorization_for(:instructors).to(:drop) }
+  it { is_expected.to route_command("halp clear").with_authorization_for(:instructors).to(:clear) }
 
   ## General Commands
   context "bot commands" do
@@ -68,7 +68,7 @@ describe Lita::Handlers::HelpQueue, lita_handler: true do
 
     it "allows instructors to remove a student from the queue by name" do
       send_command("halp me", as: dylan, from: rails)
-      send_command("halp pop dylan", as: brit)
+      send_command("halp drop dylan", as: brit)
       expect(replies.last).to start_with("Dylan has been removed from the queue.")
       send_command("halp count", from: rails)
       expect(replies.last).to start_with("Hackers seeking fresh eyes: 0")
