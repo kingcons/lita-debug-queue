@@ -3,10 +3,10 @@ Gem::Specification.new do |spec|
   spec.version       = "0.1.0"
   spec.authors       = ["Brit Butler"]
   spec.email         = ["brit@kingcons.io"]
-  spec.description   = "TODO: Add a description"
-  spec.summary       = "TODO: Add a summary"
-  spec.homepage      = "TODO: Add a homepage"
-  spec.license       = "TODO: Add a license"
+  spec.description   = "Queue tracking of users who need debugging help with per-channel management"
+  spec.summary       = "A Lita handler for requesting debugging help"
+  spec.homepage      = "https://github.com/kingcons/lita-debug-queue"
+  spec.license       = "MIT"
   spec.metadata      = { "lita_plugin_type" => "handler" }
 
   spec.files         = `git ls-files`.split($/)

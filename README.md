@@ -1,6 +1,6 @@
 # lita-debug-queue
 
-TODO: Add a description of the plugin.
+Queue tracking of users who need debugging help with per-channel management.
 
 ## Installation
 
@@ -12,8 +12,11 @@ gem "lita-debug-queue"
 
 ## Configuration
 
-TODO: Describe any configuration attributes the plugin exposes.
+lita-debug-queue expects two things to be present for correct operation:
+
+1. An `:instructors` authorization group containing admin users.
+2. A `classrooms` config option containing a Hash that maps instructor mention names to classroom channels.
 
 ## Usage
 
-TODO: Describe the plugin's features and how to use them.
+**TODO**
