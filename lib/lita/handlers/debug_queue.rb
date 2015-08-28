@@ -1,6 +1,8 @@
 module Lita
   module Handlers
     class DebugQueue < Handler
+      config :classrooms # A mapping from instructor names to classroom channels.
+
       route(/^debug me$/, :add, command: true, help: { })
       route(/^debug nvm$/, :cancel, command: true, help: { })
       route(/^debug queue$/, :show, command: true, help: { })
@@ -45,12 +47,24 @@ module Lita
       end
 
       def next(response)
+        @room = config.classrooms[response.user.mention_name]
+        student = room_queue.pop
+        redis.set(@room, room_queue.reject { |x| x == student })
+        robot.send_message(response.user, "@#{student}: You're up! Let's debug :allthethings:")
+        response.reply("#{student} is up next and has been notified.")
       end
 
       def drop(response)
+        @room = config.classrooms[response.user.mention_name]
+        student = response.matches[0][0] # TODO: We could be safer here.
+        redis.set(@room, room_queue.reject { |x| x == student })
+        response.reply("#{student} has been removed from the queue.")
       end
 
       def clear(response)
+        @room = config.classrooms[response.user.mention_name]
+        redis.del(@room)
+        response.reply("Sounds like time for :beer: and ping pong!")
       end
 
       private

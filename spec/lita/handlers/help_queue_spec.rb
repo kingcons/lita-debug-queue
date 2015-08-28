@@ -1,6 +1,11 @@
 require "spec_helper"
 
 describe Lita::Handlers::DebugQueue, lita_handler: true do
+  let(:vedika) { Lita::User.create(456, mention_name: "vedika") }
+  let(:brit)   { Lita::User.create(789, mention_name: "brit") }
+  let(:dylan)  { Lita::User.create(123, mention_name: "dylan") }
+  let(:rails)  { Lita::Room.new("rails") }
+
   ## Routes
   it { is_expected.to route_command("debug me").to(:add) }
   it { is_expected.to route_command("debug nvm").to(:cancel) }
@@ -11,12 +16,8 @@ describe Lita::Handlers::DebugQueue, lita_handler: true do
   it { is_expected.to route_command("debug clear").with_authorization_for(:instructors).to(:clear) }
 
   ## General Commands
-  context "bot commands" do
-    let(:dylan)  { Lita::User.create(123, mention_name: "dylan") }
-    let(:rails)  { Lita::Room.new("rails") }
+  context "user commands" do
     let(:ocaml)  { Lita::Room.new("ocaml") }
-    let(:vedika) { Lita::User.create(456, mention_name: "vedika") }
-    let(:brit)   { Lita::User.create(789, mention_name: "brit") }
 
     it "doesn't allow students to send messages outside the class channel" do
       ["debug me", "debug nvm", "debug queue", "debug count"].each do |cmd|
@@ -63,12 +64,22 @@ describe Lita::Handlers::DebugQueue, lita_handler: true do
       send_command("debug count", from: rails)
       expect(replies.last).to start_with("Hackers seeking fresh eyes: 1")
     end
+  end
+
+  context "instructor commands" do
+    before(:each) do
+      registry.config.handlers.debug_queue.classrooms = {
+        'brit' => 'rails'
+      }
+      @auth = Lita::Authorization.new(registry.config)
+      @auth.add_user_to_group!(brit, :instructors)
+    end
 
     ## Instructor Commands
     it "allows instructors to notify the next student and pop them from the queue" do
       send_command("debug me", as: vedika, from: rails)
       send_command("debug next", as: brit)
-      expect(replies.last).to start_with("Vedika is up next and has been notified.")
+      expect(replies.last).to start_with("vedika is up next and has been notified.")
       send_command("debug count", from: rails)
       expect(replies.last).to start_with("Hackers seeking fresh eyes: 0")
     end
@@ -76,7 +87,7 @@ describe Lita::Handlers::DebugQueue, lita_handler: true do
     it "allows instructors to remove a student from the queue by name" do
       send_command("debug me", as: dylan, from: rails)
       send_command("debug drop dylan", as: brit)
-      expect(replies.last).to start_with("Dylan has been removed from the queue.")
+      expect(replies.last).to start_with("dylan has been removed from the queue.")
       send_command("debug count", from: rails)
       expect(replies.last).to start_with("Hackers seeking fresh eyes: 0")
     end
@@ -85,6 +96,7 @@ describe Lita::Handlers::DebugQueue, lita_handler: true do
       send_command("debug me", as: vedika, from: rails)
       send_command("debug me", as: dylan, from: rails)
       send_command("debug clear", as: brit)
+      expect(replies.last).to start_with("Sounds like time for :beer: and ping pong!")
       send_command("debug count", from: rails)
       expect(replies.last).to start_with("Hackers seeking fresh eyes: 0")
     end
