@@ -25,7 +25,7 @@ module Lita
           response.reply("#{student}: Easy there killer. You're already on the list.")
         else
           @room.add(student)
-          response.reply("#{student}: Help is on the way.")
+          response.reply("#{student}: Help is coming soon.")
         end
       end
 
@@ -81,7 +81,7 @@ module Lita
       private
 
       def check_room!(response)
-        @room = RoomFinder.for(config.classrooms, response)
+        @room = RoomFinder.for(config.classrooms, response, redis)
         response.reply_privately("You must be in the class channel to send this message.") unless @room
         @room
       end

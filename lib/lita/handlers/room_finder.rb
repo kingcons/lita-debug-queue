@@ -1,15 +1,15 @@
 module Lita
   module Handlers
     class RoomFinder
-      def self.for(rooms, response)
+      def self.for(rooms, response, redis)
         sender = response.user.mention_name
         room = response.message.source.room_object
         if rooms.has_key?(sender)
           name = rooms[sender]
-          RoomQueue.new(name)
+          RoomQueue.new(name, redis)
         elsif room
           name = self.get_room_name(room)
-          RoomQueue.new(name)
+          RoomQueue.new(name, redis)
         end
       end
 

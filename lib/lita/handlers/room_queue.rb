@@ -1,9 +1,9 @@
 module Lita
   module Handlers
     class RoomQueue
-      def initialize(name)
+      def initialize(name, redis)
         @name = name
-        @redis = Redis::Namespace.new(:debug_queue)
+        @redis = redis
       end
 
       def queue
