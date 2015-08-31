@@ -5,6 +5,13 @@ describe Lita::Handlers::DebugQueue, lita_handler: true do
   let(:brit)   { Lita::User.create(789, mention_name: "brit") }
   let(:dylan)  { Lita::User.create(123, mention_name: "dylan") }
   let(:rails)  { Lita::Room.new("rails") }
+  before(:each) do
+    registry.config.handlers.debug_queue.classrooms = {
+      'brit' => 'rails'
+    }
+    @auth = Lita::Authorization.new(registry.config)
+    @auth.add_user_to_group!(brit, :instructors)
+  end
 
   ## Routes
   it { is_expected.to route_command("debug me").to(:add) }
@@ -67,12 +74,9 @@ describe Lita::Handlers::DebugQueue, lita_handler: true do
   end
 
   context "instructor commands" do
-    before(:each) do
-      registry.config.handlers.debug_queue.classrooms = {
-        'brit' => 'rails'
-      }
-      @auth = Lita::Authorization.new(registry.config)
-      @auth.add_user_to_group!(brit, :instructors)
+    it "is not necessary for instructors to say messages in channel since their classroom is known" do
+      send_command("debug count", as: brit)
+      expect(replies.last).to start_with("Hackers seeking fresh eyes: 0")
     end
 
     ## Instructor Commands

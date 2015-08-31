@@ -51,33 +51,51 @@ module Lita
       end
 
       def next(response)
-        @room = config.classrooms[response.user.mention_name]
+        return unless check_room!(response)
         student = room_queue.pop
-        redis.set(@room, room_queue.reject { |x| x == student })
-        robot.send_message(response.user, "@#{student}: You're up! Let's debug :allthethings:")
-        response.reply("#{student} is up next and has been notified.")
+        if student
+          redis.set(@room, room_queue.reject { |x| x == student })
+          robot.send_message(response.user, "@#{student}: You're up! Let's debug :allthethings:")
+          response.reply("#{student} is up next and has been notified.")
+        else
+          response.reply("The queue is empty. You don't need to see any students!")
+        end
       end
 
       def drop(response)
-        @room = config.classrooms[response.user.mention_name]
-        student = response.matches[0][0] # TODO: We could be safer here.
-        redis.set(@room, room_queue.reject { |x| x == student })
-        response.reply("#{student} has been removed from the queue.")
+        return unless check_room!(response)
+        student = response.args[1]
+        if room_queue.include?(student)
+          redis.set(@room, room_queue.reject { |x| x == student })
+          response.reply("#{student} has been removed from the queue.")
+        else
+          response.reply("#{student} is not in the queue for #{@room}!")
+        end
       end
 
       def clear(response)
-        @room = config.classrooms[response.user.mention_name]
+        return unless check_room!(response)
         redis.del(@room)
         response.reply("Sounds like time for :beer: and ping pong!")
       end
 
       private
+
       def check_room!(response)
-        # KLUDGE: The following is a gross hack as the current room_object is incorrect.
-        # See lita-slack Issue #44
-        @room = Lita::Room.find_by_id(response.message.source.room).name
+        speaker = response.user.mention_name
+        if config.classrooms.has_key?(speaker)
+          @room = config.classrooms[speaker]
+        elsif response.message.source.room
+          @room = get_room_name(response.message.source.room_object)
+        end
         response.reply_privately("You must be in the class channel to send this message.") unless @room
         @room
+      end
+
+      # KLUDGE: The following is a hack as the current room_object is incorrect. (lita-slack issue #44)
+      def get_room_name(room)
+        # KLUDGE: And this conditional is a hack since the test rooms are mocked.
+        room.id == room.name ? room.name : Lita::Room.find_by_id(room.id).name(room)
       end
 
       def room_queue
