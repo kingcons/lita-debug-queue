@@ -56,7 +56,8 @@ module Lita
           response.reply("The queue is empty. Sounds like you could use a break. :)")
         else
           student = @room.next
-          robot.send_message(student, "@#{student}: You're up. Let's debug :allthethings:!")
+          target = target_for(student)
+          robot.send_message(target, "@#{student}: You're up. Let's debug :allthethings:!")
           response.reply("#{student} is up next and has been notified.")
         end
       end
@@ -84,6 +85,10 @@ module Lita
         @room = RoomFinder.for(config.classrooms, response, redis)
         response.reply_privately("You must be in the class channel to send this message.") unless @room
         @room
+      end
+
+      def target_for(name)
+        Lita::Source.new(user: Lita::User.find_by_mention_name(name))
       end
     end
 
