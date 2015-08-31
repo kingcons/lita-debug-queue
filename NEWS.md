@@ -1,5 +1,11 @@
 ## News
 
+### 0.1.2 (2015-08-31)
+
+* Add docstrings for built-in Lita help.
+* Fix inconsistency in the way the room is determined.
+* Fix student not being notified on instructor "debug next".
+
 ### 0.1.1 (2015-08-28)
 
 * Quick workaround for issue #44 in lita-slack.
