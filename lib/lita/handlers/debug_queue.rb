@@ -21,10 +21,10 @@ module Lita
       def add(response)
         return unless check_room!(response)
         student = response.user.mention_name
-        if room_queue.include?(student)
+        if @room.include?(student)
           response.reply("#{student}: Easy there killer. You're already on the list.")
         else
-          redis.set(@room, room_queue.push(student))
+          @room.add(student)
           response.reply("#{student}: Help is on the way.")
         end
       end
@@ -32,8 +32,8 @@ module Lita
       def cancel(response)
         return unless check_room!(response)
         student = response.user.mention_name
-        if room_queue.include?(student)
-          redis.set(@room, room_queue.reject { |x| x == student })
+        if @room.include?(student)
+          @room.remove(student)
           response.reply("#{student}: Glad you figured it out! :)")
         else
           response.reply("#{student}: You know you're not in the queue, right?")
@@ -42,31 +42,30 @@ module Lita
 
       def show(response)
         return unless check_room!(response)
-        response.reply("Queue for #{@room} => #{room_queue}")
+        response.reply("Queue for #{@room} => #{@room.queue}")
       end
 
       def count(response)
         return unless check_room!(response)
-        response.reply("Hackers seeking fresh eyes: #{room_queue.count}")
+        response.reply("Hackers seeking fresh eyes: #{@room.count}")
       end
 
       def next(response)
         return unless check_room!(response)
-        student = room_queue.pop
-        if student
-          redis.set(@room, room_queue.reject { |x| x == student })
-          robot.send_message(response.user, "@#{student}: You're up! Let's debug :allthethings:")
-          response.reply("#{student} is up next and has been notified.")
+        if @room.count.zero?
+          response.reply("The queue is empty. Sounds like you could use a break. :)")
         else
-          response.reply("The queue is empty. You don't need to see any students!")
+          student = @room.next
+          robot.send_message(student, "@#{student}: You're up. Let's debug :allthethings:!")
+          response.reply("#{student} is up next and has been notified.")
         end
       end
 
       def drop(response)
         return unless check_room!(response)
         student = response.args[1]
-        if room_queue.include?(student)
-          redis.set(@room, room_queue.reject { |x| x == student })
+        if @room.include?(student)
+          @room.remove(student)
           response.reply("#{student} has been removed from the queue.")
         else
           response.reply("#{student} is not in the queue for #{@room}!")
@@ -75,32 +74,16 @@ module Lita
 
       def clear(response)
         return unless check_room!(response)
-        redis.del(@room)
+        @room.clear!
         response.reply("Sounds like time for :beer: and ping pong!")
       end
 
       private
 
       def check_room!(response)
-        speaker = response.user.mention_name
-        if config.classrooms.has_key?(speaker)
-          @room = config.classrooms[speaker]
-        elsif response.message.source.room
-          @room = get_room_name(response.message.source.room_object)
-        end
+        @room = RoomFinder.for(config.classrooms, response)
         response.reply_privately("You must be in the class channel to send this message.") unless @room
         @room
-      end
-
-      # KLUDGE: The following is a hack as the current room_object is incorrect. (lita-slack issue #44)
-      def get_room_name(room)
-        # KLUDGE: And this conditional is a hack since the test rooms are mocked.
-        room.id == room.name ? room.name : Lita::Room.find_by_id(room.id).name(room)
-      end
-
-      def room_queue
-        data = redis.get(@room)
-        data ? MultiJson.load(data) : []
       end
     end
 
