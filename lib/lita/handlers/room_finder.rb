@@ -16,7 +16,8 @@ module Lita
       # KLUDGE: The following is a hack as the current room_object is incorrect. (lita-slack issue #44)
       def self.get_room_name(room)
         # KLUDGE: And this conditional is a hack since the test rooms are mocked.
-        room.id == room.name ? room.name : Lita::Room.find_by_id(room.id).name(room)
+        # room.id == room.name ? room.name : Lita::Room.find_by_id(room.id).name(room)
+        Lita::Room.find_by_id(room.id).name(room)
       end
     end
   end

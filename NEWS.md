@@ -1,5 +1,15 @@
 ## News
 
+### 0.1.5 (2015-09-21)
+
+* Fix the bug but break most of the tests.
+
+  I'm screwed on this one until Lita Slack Issue #44 is fixed.
+  Essentially, the room object returned by lita-slack is incorrect.
+  I had worked around this in the RoomFinder class but that code broke
+  the tests so I added a conditional based on whether tests were running
+  and oh god why am I writing this who am I talking to, screw it.
+
 ### 0.1.4 (2015-09-21)
 
 * No plan survives first contact with the enemy.
