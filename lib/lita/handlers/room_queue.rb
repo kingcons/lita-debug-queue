@@ -1,6 +1,8 @@
 module Lita
   module Handlers
     class RoomQueue
+      attr_reader :name
+
       def initialize(name, redis)
         @name = name
         @redis = redis

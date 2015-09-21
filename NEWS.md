@@ -1,5 +1,11 @@
 ## News
 
+### 0.1.4 (2015-09-21)
+
+* No plan survives first contact with the enemy.
+
+  Add more debugging info to debug queue and debug count.
+
 ### 0.1.3 (2015-08-31)
 
 * Fix an error in how "debug next" notifies the student.

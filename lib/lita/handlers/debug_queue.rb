@@ -42,12 +42,12 @@ module Lita
 
       def show(response)
         return unless check_room!(response)
-        response.reply("Queue for #{@room} => #{@room.queue}")
+        response.reply("Queue for #{@room.name} => #{@room.queue}")
       end
 
       def count(response)
         return unless check_room!(response)
-        response.reply("Hackers seeking fresh eyes: #{@room.count}")
+        response.reply("Hackers seeking fresh eyes: #{@room.count} in #{@room.name}")
       end
 
       def next(response)
