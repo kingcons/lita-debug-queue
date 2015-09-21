@@ -17,7 +17,7 @@ module Lita
       def self.get_room_name(room)
         # KLUDGE: And this conditional is a hack since the test rooms are mocked.
         # room.id == room.name ? room.name : Lita::Room.find_by_id(room.id).name(room)
-        Lita::Room.find_by_id(room.id).name(room)
+        Lita::Room.find_by_id(room.id).name
       end
     end
   end

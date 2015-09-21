@@ -1,5 +1,9 @@
 ## News
 
+### 0.1.6 (2015-09-21)
+
+* Fix a thinko. Not the best day for me.
+
 ### 0.1.5 (2015-09-21)
 
 * Fix the bug but break most of the tests.
