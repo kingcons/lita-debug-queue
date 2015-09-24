@@ -8,6 +8,10 @@ module Lita
         @redis = redis
       end
 
+      def to_s
+        return self.queue.join('\n')
+      end
+
       def queue
         data = @redis.get(@name)
         data ? MultiJson.load(data) : []
