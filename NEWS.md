@@ -1,5 +1,9 @@
 ## News
 
+### 0.1.7 (2015-09-25)
+
+* Fix bug in "debug next" implementation.
+
 ### 0.1.6 (2015-09-21)
 
 * Fix a thinko. Not the best day for me.

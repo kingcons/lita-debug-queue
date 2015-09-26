@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "lita-debug-queue"
-  spec.version       = "0.1.6"
+  spec.version       = "0.1.7"
   spec.authors       = ["Brit Butler"]
   spec.email         = ["brit@kingcons.io"]
   spec.description   = "Queue tracking of users who need debugging help with per-channel management"
