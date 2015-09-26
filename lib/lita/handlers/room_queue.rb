@@ -9,7 +9,7 @@ module Lita
       end
 
       def to_s
-        return self.queue.join('\n')
+        self.queue.join('\n')
       end
 
       def queue
