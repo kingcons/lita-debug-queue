@@ -80,10 +80,11 @@ describe Lita::Handlers::DebugQueue, lita_handler: true do
 
     it "can notify the next student and pop them from the queue" do
       send_command("debug me", as: vedika, from: rails)
+      send_command("debug me", as: dylan, from: rails)
       send_command("debug next", as: brit)
       expect(replies.last).to start_with("vedika is up next and has been notified.")
       send_command("debug count", from: rails)
-      expect(replies.last).to start_with("Hackers seeking fresh eyes: 0")
+      expect(replies.last).to start_with("Hackers seeking fresh eyes: 1")
     end
 
     it "can remove a student from the queue by name" do

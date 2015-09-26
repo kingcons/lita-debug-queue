@@ -30,7 +30,7 @@ module Lita
       end
 
       def next
-        student = self.queue.pop
+        student = self.queue.shift
         @redis.set(@name, self.queue.reject { |x| x == student })
         student
       end
