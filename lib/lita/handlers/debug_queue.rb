@@ -11,9 +11,11 @@ module Lita
         help: { 'debug queue' => 'Show the current queue for your class.' })
       route(/^debug count$/, :count, command: true,
         help: { 'debug count' => 'Count the number of people waiting for help.' })
-      route(/^debug next$/, :next, command: true, restrict_to: [:instructors],
+      route(/^debug next$/, :next, command: true,
+        restrict_to: [:instructors, :assistants],
         help: { 'debug next' => 'Notify the next student to be helped.' })
-      route(/^debug drop\s+(.+)$/, :drop, command: true, restrict_to: [:instructors],
+      route(/^debug drop\s+(.+)$/, :drop, command: true,
+        restrict_to: [:instructors, :assistants],
         help: { 'debug drop NAME' => 'Remove the student with NAME from the queue.' })
       route(/^debug clear$/, :clear, command: true, restrict_to: [:instructors],
         help: { 'debug clear' => 'Empty the queue.' })

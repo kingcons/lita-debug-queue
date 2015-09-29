@@ -1,5 +1,10 @@
 ## News
 
+### 0.1.8 (2015-09-29)
+
+* Add support for TAs using the `next`/`drop` commands
+  by adding an `assistants` Slack auth group.
+
 ### 0.1.7 (2015-09-25)
 
 * Fix bug in "debug next" implementation.

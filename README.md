@@ -18,6 +18,8 @@ gem "lita-debug-queue"
 lita-debug-queue expects two things to be present for correct operation:
 
 1. An `:instructors` authorization group containing admin users.
+  If you want TAs to also be able to modify (but not clear) the
+  queue you should add them to an `:assistants` group.
 2. A `classrooms` config option containing a Hash that maps instructor mention names to classroom channels.
 
 ## Usage
