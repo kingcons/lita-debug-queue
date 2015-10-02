@@ -1,15 +1,15 @@
 module Lita
   module Handlers
-    class DebugQueue < Handler
+    class DebugQueue < Handler::ChatRouter
       config :classrooms # A mapping from instructor names to classroom channels.
 
-      route(/^debug me$/, :add, command: true,
+      route(/debug me/, :add,
         help: { 'debug me' => 'Put your name in the queue for debugging help.' })
-      route(/^debug nvm$/, :cancel, command: true,
+      route(/debug nvm/, :cancel,
         help: { 'debug nvm' => 'Remove your name from the queue for debugging help.' })
-      route(/^debug queue$/, :show, command: true,
+      route(/debug queue/i, :show,
         help: { 'debug queue' => 'Show the current queue for your class.' })
-      route(/^debug count$/, :count, command: true,
+      route(/debug count/i, :count,
         help: { 'debug count' => 'Count the number of people waiting for help.' })
       route(/^debug next$/, :next, command: true,
         restrict_to: [:instructors, :assistants],
@@ -17,7 +17,8 @@ module Lita
       route(/^debug drop\s+(.+)$/, :drop, command: true,
         restrict_to: [:instructors, :assistants],
         help: { 'debug drop NAME' => 'Remove the student with NAME from the queue.' })
-      route(/^debug clear$/, :clear, command: true, restrict_to: [:instructors],
+      route(/^debug clear$/, :clear, command: true,
+        restrict_to: [:instructors],
         help: { 'debug clear' => 'Empty the queue.' })
 
       def add(response)
