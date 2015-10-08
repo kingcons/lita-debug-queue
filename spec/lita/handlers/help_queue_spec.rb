@@ -5,7 +5,11 @@ describe Lita::Handlers::DebugQueue, lita_handler: true do
   let(:brit)   { Lita::User.create(789, mention_name: "brit") }
   let(:dylan)  { Lita::User.create(123, mention_name: "dylan") }
   let(:rails)  { Lita::Room.new("rails") }
+
   before(:each) do
+    allow(Lita::Handlers::RoomFinder).to receive(:get_room_name) do |room|
+      room.name
+    end
     registry.config.handlers.debug_queue.classrooms = {
       'brit' => 'rails'
     }
