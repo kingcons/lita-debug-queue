@@ -1,6 +1,8 @@
 module Lita
   module Handlers
-    class DebugQueue < Handler::ChatRouter
+    class DebugQueue
+      extend Lita::Handler::ChatRouter
+
       config :classrooms # A mapping from instructor names to classroom channels.
 
       route(/debug me/, :add,
