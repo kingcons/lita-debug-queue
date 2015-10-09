@@ -1,5 +1,9 @@
 ## News
 
+### 0.1.9 (2015-10-08)
+
+* Relax some of the routing requirements and fix the tests.
+
 ### 0.1.8 (2015-09-29)
 
 * Add support for TAs using the `next`/`drop` commands
