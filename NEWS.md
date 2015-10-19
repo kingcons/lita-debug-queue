@@ -1,5 +1,15 @@
 ## News
 
+### 0.2.0 (2015-10-18)
+
+* Restrict users adding themselves to the queue
+  to hours defined by weekeday in the configuration.
+
+  A `config.schedule` hash must be present in your
+  config file, mapping `strftime("%a")` keys to hour ranges.
+
+* Relax routing requirements on instructor commands.
+
 ### 0.1.9 (2015-10-08)
 
 * Relax some of the routing requirements and fix the tests.
