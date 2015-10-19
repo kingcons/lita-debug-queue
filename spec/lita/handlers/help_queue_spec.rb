@@ -10,6 +10,7 @@ describe Lita::Handlers::DebugQueue, lita_handler: true do
     allow(Lita::Handlers::RoomFinder).to receive(:get_room_name) do |room|
       room.name
     end
+    allow_any_instance_of(Lita::Handlers::DebugQueue).to receive(:closed?) { false }
     registry.config.handlers.debug_queue.classrooms = {
       'brit' => 'rails'
     }

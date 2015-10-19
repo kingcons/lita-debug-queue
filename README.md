@@ -15,16 +15,21 @@ gem "lita-debug-queue"
 
 ## Configuration
 
-lita-debug-queue expects two things to be present for correct operation:
+lita-debug-queue expects three things to be present for correct operation:
 
 1. An `:instructors` authorization group containing admin users.
-  If you want TAs to also be able to modify (but not clear) the
-  queue you should add them to an `:assistants` group.
-2. A `classrooms` config option containing a Hash that maps instructor mention names to classroom channels.
+   If you want TAs to also be able to modify (but not clear) the
+   queue you should add them to an `:assistants` group.
+
+2. A `classrooms` config option containing a Hash that maps instructor mention nam   es to classroom channels.
+
+3. A `schedule` config option containing a Hash that maps from days of the week
+   (as from `DateTime.now.strftime("%a")`), to ranges of hours in the
+   [server's time zone][heroku-tz].
+
+[heroku-tz]: http://blog.pardner.com/2012/08/setting-the-default-time-zone-for-a-heroku-app/
 
 ## Usage
-
-All usage is based on commands so statements must be directed `@ironbot: foo` or sent as a DM.
 
 ### General Commands
 
@@ -34,6 +39,7 @@ All usage is based on commands so statements must be directed `@ironbot: foo` or
 * `debug count` - Count the number of people waiting for help.
 
 ### Instructor Commands
+
 * `debug next` - Notify the next student to be helped.
 * `debug drop NAME` - Remove the student with NAME from the queue.
 * `debug clear` - Empty the queue.

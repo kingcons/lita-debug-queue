@@ -4,6 +4,7 @@ module Lita
       extend Lita::Handler::ChatRouter
 
       config :classrooms # A mapping from instructor names to classroom channels.
+      config :schedule   # A mapping from weekdays to available instructor hours.
 
       route(/debug me/, :add,
         help: { 'debug me' => 'Put your name in the queue for debugging help.' })
@@ -13,20 +14,22 @@ module Lita
         help: { 'debug queue' => 'Show the current queue for your class.' })
       route(/debug count/i, :count,
         help: { 'debug count' => 'Count the number of people waiting for help.' })
-      route(/^debug next$/, :next, command: true,
+      route(/debug next/, :next,
         restrict_to: [:instructors, :assistants],
         help: { 'debug next' => 'Notify the next student to be helped.' })
-      route(/^debug drop\s+(.+)$/, :drop, command: true,
+      route(/debug drop\s+(.+)/, :drop,
         restrict_to: [:instructors, :assistants],
         help: { 'debug drop NAME' => 'Remove the student with NAME from the queue.' })
-      route(/^debug clear$/, :clear, command: true,
+      route(/^debug clear$/, :clear,
         restrict_to: [:instructors],
         help: { 'debug clear' => 'Empty the queue.' })
 
       def add(response)
         return unless check_room!(response)
         student = response.user.mention_name
-        if @room.include?(student)
+        if closed?(DateTime.now)
+          response.reply("#{student}: Sorry, the queue is closed for the day.")
+        elsif @room.include?(student)
           response.reply("#{student}: Easy there killer. You're already on the list.")
         else
           @room.add(student)
@@ -94,6 +97,11 @@ module Lita
 
       def target_for(name)
         Lita::Source.new(user: Lita::User.find_by_mention_name(name))
+      end
+
+      def closed?(now)
+        hours = config.schedule[now.strftime("%a")]
+        hours && !hours.include?(now.hour)
       end
     end
 
