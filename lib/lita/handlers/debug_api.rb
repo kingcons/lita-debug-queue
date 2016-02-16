@@ -13,13 +13,13 @@ module Lita
       http.delete "api/:classroom/clear", :clear
 
       def show(request, response)
-        return unless set_room!(request, response)
+        return unless validate!(request, response)
         result = { queue: @room.queue }
         response.write(MultiJson.dump(result))
       end
 
       def next(request, response)
-        return unless set_room!(request, response)
+        return unless validate!(request, response)
         if @room.count.zero?
           result = {
             queue: @room.queue,
@@ -37,14 +37,14 @@ module Lita
       end
 
       def clear(request, response)
-        return unless set_room!(request, response)
+        return unless validate!(request, response)
         @room.clear!
         result = { queue: @room.queue }
         response.write(MultiJson.dump(result))
       end
 
       def drop(request, response)
-        return unless set_room!(request, response)
+        return unless validate!(request, response)
         params = request.env["router.params"]
         student = request.params["student"]
 
@@ -59,11 +59,26 @@ module Lita
 
       private
 
-      ## NOTES: set_room! is currently a nasty bag of stateful nonsense.
-      ## We also aren't checking that the passphrase is supplied anywhere currently.
-      def set_room!(request, response)
+      ## NOTES: These private methods are a tangle of stateful filth.
+      ## This is out of an attempt at DRYness since we need to return
+      ## JSON everywhere and I lack a nice error handling mechanism
+      ## like rescue_from. (See: response.headers, response.write)
+
+      def validate!(request, response)
         response.headers["Content-Type"] = "application/json"
-        name = request.env["router.params"][:classroom]
+        passphrase_check!(request.params, response)
+        room_check!(request.env, response)
+        @room
+      end
+
+      def passphrase_check!(params, response)
+        authenticated = params["passphrase"] == config.passphrase
+        result = { error: "Passphrase must be supplied correctly to use API." }
+        response.write(MultiJson.dump(result)) unless authenticated
+      end
+
+      def room_check!(env, response)
+        name = env["router.params"][:classroom]
         if valid_room?(name)
           redis.namespace = "handlers:debug_queue"
           @room = RoomQueue.new(name, redis)
@@ -71,7 +86,6 @@ module Lita
           result = { error: "Couldn't find Slack channel '#{name}'" }
           response.write(MultiJson.dump(result))
         end
-        @room
       end
 
       def valid_room?(name)
