@@ -46,7 +46,7 @@ module Lita
       def drop(request, response)
         return unless set_room!(request, response)
         params = request.env["router.params"]
-        student = params[:student]
+        student = request.params["student"]
 
         if @room.include?(student)
           @room.remove(student)
@@ -59,6 +59,8 @@ module Lita
 
       private
 
+      ## NOTES: set_room! is currently a nasty bag of stateful nonsense.
+      ## We also aren't checking that the passphrase is supplied anywhere currently.
       def set_room!(request, response)
         response.headers["Content-Type"] = "application/json"
         name = request.env["router.params"][:classroom]
