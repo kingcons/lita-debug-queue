@@ -63,6 +63,7 @@ module Lita
         response.headers["Content-Type"] = "application/json"
         name = request.env["router.params"][:classroom]
         if valid_room?(name)
+          redis.namespace = "handlers:debug_queue"
           @room = RoomQueue.new(name, redis)
         else
           result = { error: "Couldn't find Slack channel '#{name}'" }
