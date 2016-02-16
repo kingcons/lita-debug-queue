@@ -21,11 +21,17 @@ module Lita
       def next(request, response)
         return unless set_room!(request, response)
         if @room.count.zero?
-          result = { message: "The queue is empty. :beer:?" }
+          result = {
+            queue: @room.queue,
+            message: "The queue is empty. :beer:?"
+          }
         else
           student = @room.next
           send_message(student, "@#{student}: You're up. Let's debug :allthethings:!")
-          result = { message: "#{student} is up next and has been notified." }
+          result = {
+            queue: @room.queue,
+            message: "#{student} is up next and has been notified."
+          }
         end
         response.write(MultiJson.dump(result))
       end
