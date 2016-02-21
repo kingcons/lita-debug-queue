@@ -1,5 +1,12 @@
 ## News
 
+### 0.3.0 (2016-02-21)
+
+* The main addition is an API for administrators to interact with the queue.
+  The API is on by default and is *NOT* designed to be secure, only requiring an API key,
+  so it is recommended for most users to stick with version 0.2.0 for the time being.
+  The API methods available are documented in the README.
+
 ### 0.2.0 (2015-10-18)
 
 * Restrict users adding themselves to the queue
