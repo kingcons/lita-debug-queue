@@ -7,6 +7,7 @@ Lita.load_locales Dir[File.expand_path(
 require "lita/handlers/room_finder"
 require "lita/handlers/room_queue"
 require "lita/handlers/debug_queue"
+require "lita/handlers/debug_api"
 
 Lita::Handlers::DebugQueue.template_root File.expand_path(
   File.join("..", "..", "templates"),
