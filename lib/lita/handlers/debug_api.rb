@@ -37,7 +37,7 @@ module Lita
       def clear(request, response)
         return unless validate!(request, response)
         @room.clear!
-        result = { queue: @room.queue }
+        result = { queue: @room.queue, message: "So much for that. :control_knobs:" }
         response.write(MultiJson.dump(result))
       end
 
@@ -48,9 +48,9 @@ module Lita
 
         if @room.include?(student)
           @room.remove(student)
-          result = { queue: @room.queue }
+          result = { queue: @room.queue, message: "#{student} has been removed." }
         else
-          result = { error: "#{student} isn't in the queue!" }
+          result = { queue: @room.queue, message: "#{student} isn't in the queue!" }
         end
         response.write(MultiJson.dump(result))
       end
