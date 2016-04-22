@@ -1,5 +1,9 @@
 ## News
 
+### 0.3.1 (2016-04-22)
+
+* Make all debug queue commands case insensitive.
+
 ### 0.3.0 (2016-02-21)
 
 * The main addition is an API for administrators to interact with the queue.
