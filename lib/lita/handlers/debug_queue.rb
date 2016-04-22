@@ -6,21 +6,21 @@ module Lita
       config :classrooms # A mapping from instructor names to classroom channels.
       config :schedule   # A mapping from weekdays to available instructor hours.
 
-      route(/debug me/, :add,
+      route(/debug me/i, :add,
         help: { 'debug me' => 'Put your name in the queue for debugging help.' })
-      route(/debug nvm/, :cancel,
+      route(/debug nvm/i, :cancel,
         help: { 'debug nvm' => 'Remove your name from the queue for debugging help.' })
       route(/debug queue/i, :show,
         help: { 'debug queue' => 'Show the current queue for your class.' })
       route(/debug count/i, :count,
         help: { 'debug count' => 'Count the number of people waiting for help.' })
-      route(/debug next/, :next,
+      route(/debug next/i, :next,
         restrict_to: [:instructors, :assistants],
         help: { 'debug next' => 'Notify the next student to be helped.' })
-      route(/debug drop\s+(.+)/, :drop,
+      route(/debug drop\s+(.+)/i, :drop,
         restrict_to: [:instructors, :assistants],
         help: { 'debug drop NAME' => 'Remove the student with NAME from the queue.' })
-      route(/^debug clear$/, :clear,
+      route(/^debug clear$/i, :clear,
         restrict_to: [:instructors],
         help: { 'debug clear' => 'Empty the queue.' })
 
