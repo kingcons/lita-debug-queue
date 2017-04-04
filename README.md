@@ -20,6 +20,8 @@ lita-debug-queue expects four things to be present for correct operation:
 1. An `:instructors` authorization group containing admin users.
    If you want TAs to also be able to modify (but not clear) the
    queue you should add them to an `:assistants` group.
+   The Slack admin can message Ironbot to add users to an authorization group as follows: `auth add nick.name instructors`.
+   Note that the Slack admin IDs should be set in the `lita_config.rb` file for your bot. You can look up a users Id with `users find nick.name`.
 
 2. A `debug_queue.classrooms` config option containing a Hash that maps instructor mention nam   es to classroom channels.
 
