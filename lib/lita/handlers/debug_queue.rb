@@ -50,7 +50,7 @@ module Lita
 
       def show(response)
         return unless check_room!(response)
-        response.reply("Queue for #{@room.name} => #{@room.queue}")
+        response.reply("Queue for #{@room.name}:\n#{@room}")
       end
 
       def count(response)
